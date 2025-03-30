@@ -14,7 +14,8 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
   const [taskData, setTaskData] = useState({
     title: "",
     Junction: "",
-    label: "garbage",
+    train: "",
+    label: "",
     assignedTo: "",
     time: "",
     notes: "",
@@ -129,16 +130,26 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
             required
           />
 
-            <input
-            type="text"
-            name="junction"
-            placeholder="junction"
-            className="w-full border p-2"
-            onChange={handleChange}
-            required
-          />
+          <select name="junction" className="w-full border p-2" onChange={handleChange}>
+            <option value="">select junction</option>
+            <option value="Ballari junction railway station">Ballari junction railway station</option>
+            <option value="Bengaluru city railway station">Bengaluru city railway station</option>
+            <option value="Kalaburgi junction railway station">Kalaburgi junction railway station</option>
+            <option value="Mangalore junction railway station">Mangalore junction railway station</option>
+            <option value="Mysore junction railway station">Mysore junction railway station</option>
+            </select> 
+
+            <select name="train" className="w-full border p-2" onChange={handleChange}>
+            <option value="">Select train</option>
+            <option value="Amravathi express">Amravathi express</option>
+            <option value="Bangalore sangli rani chennamma express">Bangalore sangli rani chennamma express</option>
+            <option value="Basava express">Basava express</option>
+            <option value="Thiruvananthapuram rajdhani express">Thiruvananthapuram rajdhani express</option>
+            <option value="Mysore express">Mysore express</option>
+            </select> 
 
           <select name="label" className="w-full border p-2" onChange={handleChange}>
+            <option value="">select label</option>
             <option value="garbage">Garbage</option>
             <option value="infestation">Infestation</option>
             <option value="restroom">Restroom</option>

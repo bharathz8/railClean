@@ -16,13 +16,14 @@ router.post(
     authMiddleware, 
     adminMiddleware, 
     asyncHandler(async (req: AuthRequest, res: Response) => {
-        let { title, junction, label, assignedTo, time, notes } = req.body;
+        let { title, junction, label, assignedTo, time, notes, train } = req.body;
 
         const formattedTime = moment(time, "YYYY-MM-DDTHH:mm").toDate();
 
         const newTask = new Task({
             title,
             junction,
+            train,
             label,
             assignedTo,
             time: formattedTime,

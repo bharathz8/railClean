@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 interface ITask extends Document {
     title: string,
     junction: string,
+    train: string,
     label: "garbage" | "infestation" | "restroom",
     assignedTo: mongoose.Types.ObjectId,
     time: Date,
@@ -13,6 +14,7 @@ interface ITask extends Document {
 const taskSchema = new Schema<ITask>({
     title: {type: String, required: true},
     junction: {type: String, required: true},
+    train: {type: String, required: true},
     label: {type: String, enum: ["garbage", "infestation", "restroom"], required:true},
     time: {type: Date, required: true},
     assignedTo: {type: Schema.Types.ObjectId, ref: "Worker", required: true},

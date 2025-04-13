@@ -7,6 +7,8 @@ interface Task {
   _id: string;
   title: string;
   junction: string;
+  train: string;
+  trainCoach: [string];
   status: "completed" | "in-progress" | "pending";
   time: string;
   assignedTo?: { name: string };
@@ -158,6 +160,8 @@ const WorkerDashboard: React.FC = () => {
                       <h3 className="font-medium">{task.junction}</h3>
                       <p className="text-sm text-gray-600">title: {task.title || "N/A"}</p>
                       <p className="text-sm text-gray-600">Label: {task.label || "N/A"}</p>
+                      <p className="text-sm text-gray-600">Train: {task.train || "N/A"}</p>
+                      <p className="text-sm text-gray-600">Train Coach: {task.trainCoach || "N/A"}</p>
                       <p className="text-sm text-gray-600">Date & Time: {new Date(task.time).toLocaleString()}</p>
                       {task.notes && <p className="text-sm text-gray-500">Notes: {task.notes}</p>}
                     </div>

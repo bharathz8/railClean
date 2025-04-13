@@ -15,11 +15,12 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
     title: "",
     Junction: "",
     train: "",
+    trainCoach: "",
     label: "",
     assignedTo: "",
     time: "",
     notes: "",
-    status: "pending", 
+    status: "pending",
   });
 
   const [workers, setWorkers] = useState<Worker[]>([]);
@@ -27,14 +28,22 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
   const [fetchingWorkers, setFetchingWorkers] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const coachOptions = [
+    { type: "1st AC", coaches: ["A"] },
+    { type: "2nd AC", coaches: ["B1", "B2", "B3"] },
+    { type: "3rd AC", coaches: ["C1", "C2", "C3", "C4", "C5", "C6"] },
+    { type: "Sleeper", coaches: Array.from({ length: 20 }, (_, i) => `S${i + 1}`) },
+    { type: "General", coaches: ["General"] },
+  ];
+
   // Fetch workers from backend
   useEffect(() => {
     const fetchWorkers = async () => {
       setFetchingWorkers(true);
-  
+
       try {
         const token = localStorage.getItem("token");
-  
+
         const response = await fetch("http://localhost:3000/workers", {
           method: "GET",
           headers: {
@@ -42,16 +51,16 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (response.status === 401 || response.status === 403) {
           setErrorMessage("You are not authorized to view this data.");
           return;
         }
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch workers");
         }
-  
+
         const data = await response.json();
         setWorkers(data);
       } catch (error) {
@@ -61,10 +70,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
         setFetchingWorkers(false);
       }
     };
-  
+
     fetchWorkers();
   }, []);
-  
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTaskData({ ...taskData, [e.target.name]: e.target.value });
@@ -76,48 +85,48 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
     setErrorMessage("");
 
     try {
-        const token = localStorage.getItem("token"); // Get token from localStorage
-        if (!token) {
-            throw new Error("No authentication token found. Please log in.");
-        }
+      const token = localStorage.getItem("token"); // Get token from localStorage
+      if (!token) {
+        throw new Error("No authentication token found. Please log in.");
+      }
 
-        const formattedTaskData = {
-            ...taskData,
-            time: new Date(taskData.time).toISOString(),
-        };
+      const formattedTaskData = {
+        ...taskData,
+        time: new Date(taskData.time).toISOString(),
+      };
 
-        console.log("Sending Task Data:", formattedTaskData);
+      console.log("Sending Task Data:", formattedTaskData);
 
-        const response = await fetch("http://localhost:3000/create-task", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` // Send token in headers
-            },
-            body: JSON.stringify(formattedTaskData),
-        });
+      const response = await fetch("http://localhost:3000/create-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Send token in headers
+        },
+        body: JSON.stringify(formattedTaskData),
+      });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(errorText || "Task creation failed");
-        }
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Task creation failed");
+      }
 
-        onTaskCreated();
-        onClose();
+      onTaskCreated();
+      onClose();
     } catch (error: any) {
-        console.error("Error:", error);
-        setErrorMessage(`Failed to create task: ${error.message}`);
+      console.error("Error:", error);
+      setErrorMessage(`Failed to create task: ${error.message}`);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-md w-96">
         <h2 className="text-xl font-bold mb-4">Create Task</h2>
-        
+
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -137,16 +146,37 @@ const CreateTask: React.FC<CreateTaskProps> = ({ onClose, onTaskCreated }) => {
             <option value="Kalaburgi junction railway station">Kalaburgi junction railway station</option>
             <option value="Mangalore junction railway station">Mangalore junction railway station</option>
             <option value="Mysore junction railway station">Mysore junction railway station</option>
-            </select> 
+          </select>
 
-            <select name="train" className="w-full border p-2" onChange={handleChange}>
+          <select name="train" className="w-full border p-2" onChange={handleChange}>
             <option value="">Select train</option>
             <option value="Amravathi express">Amravathi express</option>
             <option value="Bangalore sangli rani chennamma express">Bangalore sangli rani chennamma express</option>
             <option value="Basava express">Basava express</option>
             <option value="Thiruvananthapuram rajdhani express">Thiruvananthapuram rajdhani express</option>
             <option value="Mysore express">Mysore express</option>
-            </select> 
+          </select>
+
+          <select
+            name="trainCoach"
+            className="w-full border p-2"
+            onChange={(e) =>
+              setTaskData({ ...taskData, trainCoach: [e.target.value] })
+            }
+            required
+          >
+            <option value="">Select Coach</option>
+            {coachOptions.map((group) => (
+              <optgroup key={group.type} label={group.type}>
+                {group.coaches.map((coach) => (
+                  <option key={coach} value={coach}>
+                    {coach}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+
 
           <select name="label" className="w-full border p-2" onChange={handleChange}>
             <option value="">select label</option>

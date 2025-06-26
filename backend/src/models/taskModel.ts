@@ -14,7 +14,7 @@ interface ITask extends Document {
 
 const taskSchema = new Schema<ITask>({
     title: {type: String, required: true},
-    junction: {type: String, required: true},
+    junction: {type: String, required: false},
     train: {type: String, required: true},
     trainCoach: {type: [String], required: true},
     label: {type: String, enum: ["garbage", "infestation", "restroom"], required:true},

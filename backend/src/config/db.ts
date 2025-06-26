@@ -4,7 +4,7 @@ dotenv.config();
 
 const connectDb = async () => {
     try{
-        await mongoose.connect(`mongodb+srv://admin:kkJwyBt61qwGg9mN@cluster0.uc6hspy.mongodb.net/rail`);
+        await mongoose.connect(`mongodb://localhost:27017/rail`);
         console.log("database running successfully");
     } catch (e) {
         console.error(e);
